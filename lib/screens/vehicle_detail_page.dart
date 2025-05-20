@@ -96,19 +96,19 @@ class VehicleDetailPage extends StatelessWidget {
                     
                         FeatureIcon(
                           iconPath: 'assets/icons/car.png',
-                          label: 'Bluetooth',
+                          label: '12V USB Port',
                         ),
                         FeatureIcon(
                           iconPath: 'assets/icons/ac.png',
-                          label: 'Fast Charge',
+                          label: '12V USB Port',
                         ),
                         FeatureIcon(
                           iconPath: 'assets/icons/car.png',
-                          label: 'Fast Charge',
+                          label: '12V USB Port',
                         ),
                         FeatureIcon(
                           iconPath: 'assets/icons/usb5.png',
-                          label: 'Fast Charge',
+                          label: '12V USB Port',
                         ),
                       ],
                     ),

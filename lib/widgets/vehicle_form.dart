@@ -10,9 +10,10 @@ class VehicleForm extends StatefulWidget {
 }
 
 class _VehicleFormState extends State<VehicleForm> {
-  String rentalDuration = '1 Day';
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
+  final _formKey = GlobalKey<FormState>();
+  String? rentalDuration = '1 Day';
+  DateTime? selectedDate = DateTime.now();
+  TimeOfDay? selectedTime = TimeOfDay.now();
   final TextEditingController destinationController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
 
@@ -21,7 +22,7 @@ class _VehicleFormState extends State<VehicleForm> {
       context: context,
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
-      initialDate: selectedDate,
+      initialDate: selectedDate ?? DateTime.now(),
     );
     if (picked != null) setState(() => selectedDate = picked);
   }
@@ -29,7 +30,7 @@ class _VehicleFormState extends State<VehicleForm> {
   Future<void> _selectTime() async {
     final picked = await showTimePicker(
       context: context,
-      initialTime: selectedTime,
+      initialTime: selectedTime ?? TimeOfDay.now(),
     );
     if (picked != null) setState(() => selectedTime = picked);
   }
@@ -55,130 +56,101 @@ class _VehicleFormState extends State<VehicleForm> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedTime = selectedTime.format(context);
+    final formattedTime = selectedTime?.format(context) ?? '';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Rental Duration",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 12,
-            color: Colors.black,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Rental Duration", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            value: rentalDuration,
+            decoration: customInputDecoration("Select rental duration"),
+            isExpanded: true,
+            icon: const Icon(Icons.arrow_drop_down),
+            items: ['1 Day', '2 Days', '3 Days'].map((value) {
+              return DropdownMenuItem(value: value, child: Text(value));
+            }).toList(),
+            onChanged: (newValue) => setState(() => rentalDuration = newValue),
+            validator: (value) => value == null || value.isEmpty ? 'Please select a rental duration' : null,
           ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: rentalDuration,
-          decoration: customInputDecoration("Select rental duration"),
-          isExpanded: true,
-          icon: const Icon(Icons.arrow_drop_down),
-          items: ['1 Day', '2 Days', '3 Days'].map((value) {
-            return DropdownMenuItem(value: value, child: Text(value));
-          }).toList(),
-          onChanged: (newValue) => setState(() => rentalDuration = newValue!),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        const Text(
-          "Rental Starts",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 12,
-            color: Colors.black,
+          const Text("Rental Starts", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+          const SizedBox(height: 8),
+          DateTimePickerField(
+            dateText: selectedDate != null ? formatDate(selectedDate!) : 'Select date',
+            timeText: formattedTime.isNotEmpty ? formattedTime : 'Select time',
+            onDateTap: _selectDate,
+            onTimeTap: _selectTime,
           ),
-        ),
-        const SizedBox(height: 8),
-        DateTimePickerField(
-          dateText: formatDate(selectedDate),
-          timeText: formattedTime,
-          onDateTap: _selectDate,
-          onTimeTap: _selectTime,
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 8),
+          if (selectedDate == null || selectedTime == null)
+            const Padding(
+              padding: EdgeInsets.only(left: 8, top: 4),
+              child: Text("Please select date and time", style: TextStyle(color: Colors.red, fontSize: 12)),
+            ),
+          const SizedBox(height: 16),
 
-        const Text(
-          "Destination",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 12,
-            color: Colors.black,
+          const Text("Destination", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: destinationController,
+            maxLines: 1,
+            decoration: customInputDecoration("Input a destination you are driving to..."),
+            validator: (value) => value == null || value.trim().isEmpty ? 'Destination is required' : null,
           ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: destinationController,
-          maxLines: 1,
-          decoration: customInputDecoration(
-              "Input a destination you are driving to..."),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        const Text(
-          "Comment",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 12,
-            color: Colors.black,
+          const Text("Comment", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: commentController,
+            maxLines: 4,
+            decoration: customInputDecoration("Drop a comment for the merchant..."),
+            validator: (value) => value == null || value.trim().isEmpty ? 'Comment is required' : null,
           ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: commentController,
-          maxLines: 4,
-          decoration:
-              customInputDecoration("Drop a comment for the merchant..."),
-        ),
-        const SizedBox(height: 34),
+          const SizedBox(height: 34),
 
-        Column(
-  crossAxisAlignment: CrossAxisAlignment.stretch,
-  children: [
-    OutlinedButton.icon(
-      onPressed: () {},
-      icon: const Icon(
-        CupertinoIcons.mail,
-        color: Color(0xFF083D56),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () {},
+                icon: const Icon(CupertinoIcons.mail, color: Color(0xFF083D56)),
+                label: const Text("Chat with Merchant", style: TextStyle(color: Color(0xFF083D56), fontSize: 14)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF083D56)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  if (_formKey.currentState!.validate() &&
+                      selectedDate != null &&
+                      selectedTime != null) {
+                    Navigator.pushNamed(context, '/vehicle-list');
+                  } else {
+                    setState(() {});
+                  }
+                },
+             
+                label: const Text("Continue", style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF083D56),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 70),
+        ],
       ),
-      label: const Text(
-        "Chat with Merchant",
-        style: TextStyle(
-          color: Color(0xFF083D56),
-          fontSize: 14,
-        ),
-      ),
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Color(0xFF083D56)),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          
-        ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-    ),
-    const SizedBox(height: 20),
-    ElevatedButton.icon(
-      onPressed: () {
-        Navigator.pushNamed(context, '/vehicle-list');
-      },
-      label: const Text(
-        "Continue",
-        style: TextStyle(color: Colors.white),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF083D56),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-    ),
-  ],
-),
-
-        SizedBox(height: 70,)
-      ],
     );
   }
 }

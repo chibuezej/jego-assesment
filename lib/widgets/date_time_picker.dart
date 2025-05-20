@@ -19,7 +19,6 @@ class DateTimePickerField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Date Picker
         Expanded(
           child: GestureDetector(
             onTap: onDateTap,
@@ -36,15 +35,13 @@ class DateTimePickerField extends StatelessWidget {
                     dateText.isEmpty ? "Date" : dateText,
                     style: const TextStyle(fontSize: 14),
                   ),
-                  const Icon(Icons.arrow_drop_down), // "day" icon used for dropdown
+                  const Icon(Icons.arrow_drop_down),
                 ],
               ),
             ),
           ),
         ),
         const SizedBox(width: 12),
-
-        // Time Picker
         Expanded(
           child: GestureDetector(
             onTap: onTimeTap,
@@ -61,7 +58,7 @@ class DateTimePickerField extends StatelessWidget {
                     timeText.isEmpty ? "Time" : timeText,
                     style: const TextStyle(fontSize: 14),
                   ),
-                  const Icon(Icons.arrow_drop_down), // Same "day" icon
+                  const Icon(Icons.arrow_drop_down),
                 ],
               ),
             ),

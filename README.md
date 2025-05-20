@@ -15,14 +15,6 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Project Structure
-
-lib/
-│
-├── pages/ # Main UI pages (e.g. VehiclePreviewPage)
-├── widgets/ # Reusable widgets (slider, form, buttons)
-└── main.dart # Entry point of the application
-
 ## Features
 
 Image slider with overlay buttons (Back & Favorite)
