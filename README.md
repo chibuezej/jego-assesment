@@ -2,8 +2,6 @@
 
 A streamlined, responsive ride-booking application built with Flutter that allows users to book rides, view ride details, and interact with a clean and modular interface.
 
-## Features
-
 ### Core Functionality
 
 -  Modular design for easy testing and updates 
