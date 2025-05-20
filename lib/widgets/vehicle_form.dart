@@ -138,14 +138,15 @@ class _VehicleFormState extends State<VehicleForm> {
                     value == null || value.trim().isEmpty
                         ? 'Destination is required'
                         : null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
+
           const SizedBox(height: 16),
 
           const Text(
             "Comment",
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
           ),
-          const SizedBox(height: 8),
           TextFormField(
             controller: commentController,
             maxLines: 4,
@@ -157,7 +158,9 @@ class _VehicleFormState extends State<VehicleForm> {
                     value == null || value.trim().isEmpty
                         ? 'Comment is required'
                         : null,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
+
           const SizedBox(height: 34),
 
           Column(
